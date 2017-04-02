@@ -3,19 +3,7 @@
 const webhookUrl = process.env.slack_webhook_url;
 const request = require('request');
 
-const slackAuthorizer = require('./src/authorizer/slackAuthorizer');
-const parser = require('./src/service/tokenParser');
-
-module.exports.hello = (event, context, callback) => {
-  
-  const tokenParser = new parser(event.body);
-  const authorizer = new slackAuthorizer(tokenParser.parseToken());
-  
-  
-  if (!authorizer.authorize()) {
-    context.done('Unauthorized');
-  }
-  
+module.exports = (event, callback) => {
   request.post(webhookUrl, {
     form: {
       payload: '{"text": "Now is: '+ new Date() +'"}'

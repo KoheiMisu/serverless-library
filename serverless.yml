@@ -12,6 +12,7 @@
 # Happy Coding!
 
 service: testProject
+custom: ${file(./custom.yml)}
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -19,7 +20,7 @@ service: testProject
 
 provider:
   name: aws
-  runtime: nodejs4.3
+  runtime: nodejs6.10
 
 # you can overwrite defaults here
   stage: ${opt:stage} # production stage is [prod]
@@ -41,6 +42,8 @@ provider:
   environment:
     stage: ${self:provider.stage}
     bookTable: ${self:provider.stage}-books
+    slack_webhook_url: ${self:custom.slack_webhook_url}
+    slash_command_token: ${self:custom.slash_command_token}
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
@@ -72,10 +75,29 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
-  bookStore:
-    handler: books/store.store
+#  hello:
+#    handler: handler.hello
+#    events:
+#      - http:
+#          path: hello
+#          method: post
+#          cors: true
+#  bookStore:
+#    handler: books/store.store
+#    events:
+#      - http:
+#          path: books
+#          method: get
+#          cors: true
+  book:
+    handler: src/dispatcher/book.book
+    events:
+      - http:
+          path: book
+          method: post
+          cors: true
+#  bookSave:
+#    handler: src/useCase/book/context.save
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

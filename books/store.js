@@ -23,7 +23,7 @@ module.exports.store = (event, context, callback) => {
     'TableName': bookTable,
     "Item": {
       "id": uuidV1(),
-      "title": "hello"
+      "title": "hoge"
     }
   }, function(err, data) {
     console.log(err);
