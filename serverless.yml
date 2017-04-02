@@ -30,8 +30,8 @@ provider:
     slash_command_token: ${self:custom.slash_command_token}
 
 functions:
-#  hello:
-#    handler: handler.hello
+  hello:
+    handler: handler.hello
   book:
     handler: src/dispatcher/book.book
     events:
