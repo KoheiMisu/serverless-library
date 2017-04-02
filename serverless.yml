@@ -5,21 +5,22 @@ custom: ${file(./custom.yml)}
 provider:
   name: aws
   runtime: nodejs6.10
+  memorySize: 512 # optional, default is 1024. you can setting individual function.
 
 # you can overwrite defaults here
   stage: ${opt:stage} # production stage is [prod]
   region: ap-northeast-1
   iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - dynamodb:DescribeTable
-          - dynamodb:Query
-          - dynamodb:Scan
-          - dynamodb:GetItem
-          - dynamodb:PutItem
-          - dynamodb:UpdateItem
-          - dynamodb:DeleteItem
-        Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.stage}-*"
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.stage}-*"
   # environmentの値は、lambda function内で
   # process.env.{key}でアクセスする
   environment:
