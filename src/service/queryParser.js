@@ -13,7 +13,7 @@ module.exports = class queryParser {
   }
   
   parseDispatchMethod () {
-    return
+    return ;
   }
   
   parseParam () {

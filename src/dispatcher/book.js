@@ -22,12 +22,14 @@ module.exports.book = (event, context, callback) => {
   //   context.done('Unauthorized');
   // }
   
-  bookSave(event, (error, result) => {
-    const response = {
-      statusCode: 200,
-      body: JSON.stringify(result),
-    };
-
-    context.succeed(response);
-  });
+  bookSave(event, (error, result) => {});
+  
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: 'ok',
+    }),
+  };
+  
+  callback(null, response);
 };

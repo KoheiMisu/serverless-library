@@ -2,12 +2,16 @@ service: testProject
 # include extra setting
 custom: ${file(./custom.yml)}
 
+plugins:
+  - serverless-dynamodb-local # see https://www.npmjs.com/package/serverless-dynamodb-local
+
+# setting lambda
 provider:
   name: aws
   runtime: nodejs6.10
   memorySize: 512 # optional, default is 1024. you can setting individual function.
 
-# you can overwrite defaults here
+  # you can overwrite defaults here
   stage: ${opt:stage} # production stage is [prod]
   region: ap-northeast-1
   iamRoleStatements:

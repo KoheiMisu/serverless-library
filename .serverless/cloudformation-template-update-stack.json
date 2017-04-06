@@ -5,6 +5,12 @@
     "ServerlessDeploymentBucket": {
       "Type": "AWS::S3::Bucket"
     },
+    "HelloLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/testProject-dev-hello"
+      }
+    },
     "BookLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
@@ -52,6 +58,9 @@
                   ],
                   "Resource": [
                     {
+                      "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/testProject-dev-hello:*"
+                    },
+                    {
                       "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/testProject-dev-book:*"
                     }
                   ]
@@ -62,6 +71,9 @@
                     "logs:PutLogEvents"
                   ],
                   "Resource": [
+                    {
+                      "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/testProject-dev-hello:*:*"
+                    },
                     {
                       "Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/testProject-dev-book:*:*"
                     }
@@ -98,6 +110,50 @@
         }
       }
     },
+    "HelloLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/testProject/dev/1491231113739-2017-04-03T14:51:53.739Z/testProject.zip"
+        },
+        "FunctionName": "testProject-dev-hello",
+        "Handler": "handler.hello",
+        "MemorySize": 512,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "stage": "dev",
+            "bookTable": "dev-books",
+            "slack_webhook_url": "https://hooks.slack.com/services/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",
+            "slash_command_token": "7BqvAXVS1SUNBmIswKb9GDM8"
+          }
+        }
+      },
+      "DependsOn": [
+        "HelloLogGroup",
+        "IamRoleLambdaExecution"
+      ]
+    },
+    "HelloLambdaVersionn8JP4c30K0VVhL1rf8hQKupcYcZw4pHldpQrXrauag": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "HelloLambdaFunction"
+        },
+        "CodeSha256": "n8JP4c30K0VVhL1rf8+hQKupcYcZw4pHldpQrXrauag="
+      }
+    },
     "BookLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -105,7 +161,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/testProject/dev/1491125413875-2017-04-02T09:30:13.875Z/testProject.zip"
+          "S3Key": "serverless/testProject/dev/1491231113739-2017-04-03T14:51:53.739Z/testProject.zip"
         },
         "FunctionName": "testProject-dev-book",
         "Handler": "src/dispatcher/book.book",
@@ -132,14 +188,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "BookLambdaVersionBjPnUiA7RZrVLIxg4oAVZAjVbLI2oXexiKczjXDiqWM": {
+    "BookLambdaVersionn8JP4c30K0VVhL1rf8hQKupcYcZw4pHldpQrXrauag": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "BookLambdaFunction"
         },
-        "CodeSha256": "BjPnUiA7RZrVLIxg4oAVZAjVbLI2oXexiKczjXDiqWM="
+        "CodeSha256": "n8JP4c30K0VVhL1rf8+hQKupcYcZw4pHldpQrXrauag="
       }
     },
     "ApiGatewayRestApi": {
@@ -247,7 +303,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1491125414313": {
+    "ApiGatewayDeployment1491231114066": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -322,10 +378,16 @@
         "Ref": "ServerlessDeploymentBucket"
       }
     },
+    "HelloLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "HelloLambdaVersionn8JP4c30K0VVhL1rf8hQKupcYcZw4pHldpQrXrauag"
+      }
+    },
     "BookLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "BookLambdaVersionBjPnUiA7RZrVLIxg4oAVZAjVbLI2oXexiKczjXDiqWM"
+        "Ref": "BookLambdaVersionn8JP4c30K0VVhL1rf8hQKupcYcZw4pHldpQrXrauag"
       }
     },
     "ServiceEndpoint": {

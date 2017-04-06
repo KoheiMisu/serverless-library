@@ -19,7 +19,7 @@ module.exports.hello = (event, context, callback) => {
   request.post(webhookUrl, {
     form: {
       payload: '{"text": "Now is: '+ new Date() +'"}'
-    }
+    },
   }, (err, response, body) => {
     if (! err) {
       console.log(err);
