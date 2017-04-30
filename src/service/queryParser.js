@@ -16,7 +16,7 @@ module.exports = class queryParser {
     return ;
   }
   
-  parseParam () {
-    return ;
+  parseText () {
+    return queryStringParser.parse(this.queryString).text;
   }
 };

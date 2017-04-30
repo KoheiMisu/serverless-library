@@ -15,23 +15,37 @@ const insertDate = dt.format('Y-m-d H:M:S');
 
 const async = require('async');
 
+const parser = require('../../service/queryParser');
+
 module.exports = (event, callback) => {
+  
+  const queryParser = new parser(event.body);
+  
   const key = uuidV1();
   
   async.series([
     function(callback) {
+  
+      /**
+       * データを保存
+       */
       dynamoDB.put({
         'TableName': bookTable,
         'Item': {
           'id': key,
-          'title': 'hoge',
+          'title': queryParser.parseText(),
           'insert_date': insertDate,
         },
       }, function(err, data) {
-        callback(null, "first");
+        callback(null, "saved");
       });
     },
     function(callback) {
+      
+      /**
+       * 保存したものを取り出して
+       * 結果を返す
+       */
       dynamoDB.get({
         TableName: bookTable,
         Key: {
@@ -39,17 +53,19 @@ module.exports = (event, callback) => {
         },
       }, function(err, data) {
         if (!err) {
-          // const content = `*${data.Item.title}* is Saved !!`;
           const response = {
             text: `\`${data.Item.title}\` is Saved !!`,
           };
-      
+  
+          /**
+           * webhook でチャンネルにメッセージを返す
+           */
           request.post(webhookUrl, {
             form: {
               payload: JSON.stringify(response),
             },
           }, (err, response, body) => {
-            callback(null, 'second');
+            callback(null, 'getData');
           });
         }
       });

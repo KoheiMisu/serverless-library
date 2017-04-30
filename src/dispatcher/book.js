@@ -1,13 +1,5 @@
 'use strict';
 
-const AWS = require('aws-sdk');
-
-const dynamo = new AWS.DynamoDB();
-const documentClient = new AWS.DynamoDB.DocumentClient();
-
-const lambda = new AWS.Lambda();
-const bookTable = process.env.bookTable;
-
 const slackAuthorizer = require('../authorizer/slackAuthorizer');
 const parser = require('../service/queryParser');
 
@@ -17,11 +9,16 @@ module.exports.book = (event, context, callback) => {
   const queryParser = new parser(event.body);
   const authorizer = new slackAuthorizer(queryParser.parseToken());
   
+  /**
+   * 認証
+   */
+  if (!authorizer.authorize()) {
+    context.done('Unauthorized');
+  }
   
-  // if (!authorizer.authorize()) {
-  //   context.done('Unauthorized');
-  // }
-  
+  /**
+   * @Todo ここでlambda functionの振り分けを行いたい
+   */
   bookSave(event, (error, result) => {});
   
   const response = {
